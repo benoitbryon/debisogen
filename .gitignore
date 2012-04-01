@@ -1,0 +1,14 @@
+# Binaries (generated)
+/bin/
+
+# Data
+/var/
+
+# Python
+*.pyc
+*.pyo
+*.egg-info
+
+# Buildout
+/lib/buildout/*
+!/lib/buildout/bootstrap.py
