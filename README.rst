@@ -28,7 +28,7 @@ directory. It defines following options:
 Usage:
 
 * Download a Debian Squeeze iso at `Debian download page`_, as an example
- `Debian Squeeze amd64 business card ISO`_.
+  `Debian Squeeze amd64 business card ISO`_.
 * Boot your server on the ISO.
 * When you get to the install menu prompt, hit ESC, which will give you boot:
   prompt. At the prompt type:
@@ -40,8 +40,6 @@ Usage:
 Generate a preseed file with a template
 =======================================
 
-.. highlight:: sh
-
 * Install requirements:
 
   * `Python`_ 2.6 or 2.7
@@ -50,6 +48,8 @@ Generate a preseed file with a template
 
 * Install marmelune.debianisobuilder:
 
+  .. highlight:: sh
+
   ::
 
     git clone
@@ -57,7 +57,11 @@ Generate a preseed file with a template
     python lib/buildout/bootstrap.py --distribute
     bin/buildout -N
 
-* Generate preseed file::
+* Generate preseed file:
+
+  .. highlight:: sh
+
+  ::
 
     bin/paster create -t marmelune_debian_preseed ./var/preseed
 
@@ -75,6 +79,8 @@ Put a preseed file on the network, to load it at boot time
 You can use Python's builtin SimpleHttpServer to serve static files.
 As an example, if you want to serve the sample preseed file provided here at
 ``etc/preseed-squeeze-server-fr.cfg`` on your machine:
+
+.. highlight:: sh
 
 ::
 
@@ -117,6 +123,16 @@ References
 .. target-notes::
 
 .. _`Debian`: http://debian.org/
+.. _`a custom FR preseed file for Debian Squeeze servers`:
+   https://raw.github.com/benoitbryon/marmelune.debianisobuilder/master/etc/preseed-squeeze-server-fr.cfg
+.. _`Debian download page`: http://www.debian.org/distrib/
+.. _`Debian Squeeze amd64 business card ISO`:
+   http://cdimage.debian.org/debian-cd/6.0.4/amd64/iso-cd/debian-6.0.4-amd64-businesscard.iso
+.. _`Python`: http://python.org/
+.. _`Git`: http://git-scm.org/
+.. _`marmelune.debianisobuilder's repository`:
+   https://github.com/benoitbryon/marmelune.debianisobuilder
+.. _`PasteScript`: http://pythonpaste.org/script/
 .. _`Debian Squeeze documentation about preseeding`:
    http://www.debian.org/releases/squeeze/amd64/apb.html.en
 .. _`Debian Squeeze preseed example file`:
@@ -131,8 +147,3 @@ References
    http://www.thegeekstuff.com/2009/07/how-to-view-modify-and-recreate-initrd-img/
 .. _`Documentation of partman-auto recipes`:
    http://dev.blankonlinux.or.id/browser/nanggar/debian-installer/doc/devel/partman-auto-recipe.txt?rev=nanggar%2Cdebian-installer%2C1
-.. _`a custom FR preseed file for Debian Squeeze servers`:
-   https://raw.github.com/benoitbryon/marmelune.debianisobuilder/master/etc/preseed-squeeze-server-fr.cfg
-.. _`Debian Squeeze amd64 business card ISO`:
-   http://cdimage.debian.org/debian-cd/6.0.4/amd64/iso-cd/debian-6.0.4-amd64-businesscard.iso
-.. _`PasteScript`: http://pythonpaste.org/script/
