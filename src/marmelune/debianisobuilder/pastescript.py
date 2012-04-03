@@ -1,3 +1,4 @@
+"""PasteScript templates."""
 import ConfigParser
 import os
 import sys
