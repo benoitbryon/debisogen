@@ -43,18 +43,21 @@ def replace_in_file(search, replacement, filename):
         sys.stdout.write(line)
 
 
-def execute_command(command, stdin=None, stdout=subprocess.PIPE,
-                    stderr=subprocess.PIPE):
-    if isinstance(command, basestring):
-        print "executing %s" % command
-    else:
-        print "executing %s" % ' '.join(command)
-    process = subprocess.Popen(command, stdin=stdin, stdout=stdout,
-                               stderr=stderr)
-    retcode = process.wait()
-    if retcode > 0:
-        raise Exception('"%s" command exited with error: %s'
-                        % (command, retcode))
+def execute_command(command, data={}):
+    """Execute a shell command.
+
+    Command is a string ; data a dictionnary where values are supposed to be
+    strings or integers and not variables or commands.
+
+    Command and data are combined with string format operator.
+
+    >>> execute_command('echo "%(msg)s"', {'msg': 'Hello world!'})
+
+    """
+    if data:
+        command = command % data
+    print "Executing %s" % command
+    return subprocess.call(command, shell=True)
 
 
 def is_url(value):
@@ -65,5 +68,5 @@ def is_url(value):
 
 def download_file(source, destination):
     """Download file from source to destination."""
-    curl_cmd = ["curl", '--location', '--output', destination, source]
-    execute_command(curl_cmd)
+    execute_command('curl --location --output %(dest)s %(src)',
+                    {'dest': destination, 'src': source})

@@ -17,52 +17,35 @@ def iso_to_directory(iso_file, directory):
     """Extract content of an ISO image to destination directory."""
     if not os.path.exists(directory):
         os.makedirs(directory)
-    bsdtar_args = [
-        'bsdtar',
-        '-C', directory,
-        '-xf', iso_file,
-    ]
-    execute_command(bsdtar_args)
-    execute_command(['chmod', '-R', 'u+w', directory])
+    execute_command('bsdtar -C %(directory)s -xf %(iso_file)s',
+                    {'directory': directory, 'iso_file': iso_file})
+    execute_command('chmod -R u+w %(directory)s', {'directory': directory})
 
 
 def directory_to_iso(directory, iso_file):
     """Create ISO image from directory."""
-    mkisofs_args = [
-        'mkisofs',
-        '-o', iso_file,
-        '-r',
-        '-J',
-        '-no-emul-boot',
-        '-boot-load-size', '4',
-        '-boot-info-table',
-        '-b', 'isolinux/isolinux.bin',
-        '-c', 'isolinux/boot.cat',
-         directory,
-    ]
-    execute_command(mkisofs_args)
+    execute_command('mkisofs -o %(iso)s -r -J -no-emul-boot ' \
+                    ' -boot-load-size 4 -boot-info-table ' \
+                    '-b isolinux/isolinux.bin -c isolinux/boot.cat %(dir)s',
+                    {'iso': iso_file, 'dir': directory})
 
 
 def initrd_to_directory(initrd_file, directory):
     """Extract initrd.gz file to destination subdirectory."""
     assert(initrd_file.endswith('.gz'))
-    gunzip_args = ['gunzip', initrd_file]
-    execute_command(gunzip_args)
+    execute_command('gunzip %(file)s', {'file': initrd_file})
     initrd_file = initrd_file[:-3]
-    cpio_args = 'cd %s ; cpio -id < %s' % (directory, initrd_file)
-    print cpio_args
-    subprocess.call(cpio_args, shell=True)
+    execute_command('cd %(dir)s ; cpio -id < %(file)s', {'dir': directory,
+                                                         'file': initrd_file})
 
 
 def directory_to_initrd(directory, initrd_file):
     """Compress directory as initrd.gz file."""
     assert(initrd_file.endswith('.gz'))
     initrd_file = initrd_file[:-3]
-    cpio_args = "cd %(in)s && find . | cpio --create --format='newc' > " \
-                "%(out)s" % {'in': directory, 'out': initrd_file}
-    retcode = subprocess.call(cpio_args, shell=True)
-    gzip_args = ['gzip', initrd_file]
-    execute_command(gzip_args)
+    execute_command("cd %(in)s && find . | cpio --create --format='newc' > " \
+                    "%(out)s", {'in': directory, 'out': initrd_file})
+    execute_command('gzip %(file)s', {'file': initrd_file})
 
 
 def toggle_boot_loader(directory, is_boot_loader_hidden=True):
@@ -83,8 +66,9 @@ def toggle_boot_loader(directory, is_boot_loader_hidden=True):
 
 def rebuild_md5sum(directory):
     """Rebuild md5sum.txt file in the given directory."""
-    md5sum_args = 'cd %s ; md5sum `find ! -name "md5sum.txt" ! -path "./isolinux/*" -follow -type f` > md5sum.txt ;' % directory
-    retcode = subprocess.call(md5sum_args, shell=True)
+    execute_command('cd %(dir)s ; md5sum `find ! -name "md5sum.txt" ! ' \
+                    '-path "./isolinux/*" -follow -type f` > md5sum.txt ;',
+                    {'dir': directory})
 
 
 def insert_preseed_into_iso(preseed_file, input_iso_file, output_iso_file,
