@@ -36,5 +36,7 @@ setup(name='marmelune.debianisobuilder',
       entry_points=""" # -*- Entry points: -*-
       [paste.paster_create_template]
       marmelune_debian_preseed = marmelune.debianisobuilder.pastescript:DebianPreseedTemplate
+      [console_scripts]
+      debianisobuilder = marmelune.debianisobuilder.commands:build_iso
       """,
       )
