@@ -51,8 +51,11 @@ def execute_command(command, data={}):
 
     Command and data are combined with string format operator.
 
-    >>> execute_command('echo "%(msg)s"', {'msg': 'Hello world!'})
+    Return command's exit code.
 
+    >>> execute_command('echo "%(msg)s"', {'msg': 'Hello world!'})
+    Executing echo "Hello world!"
+    0
     """
     if data:
         command = command % data
