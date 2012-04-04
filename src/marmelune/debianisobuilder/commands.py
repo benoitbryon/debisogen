@@ -10,18 +10,21 @@ from utils import is_url, download_file
 
 
 def build_iso():
-    usage = "usage: %prog [options] arg"
+    usage = "usage: %prog [options]"
     parser = OptionParser(usage)
-    parser.add_option("--input-iso", help="Path or URL to ISO file.",
+    parser.add_option("--input-iso",
+                      help="Path or URL to ISO file. Default is 'input.iso'.",
                       action="store", type="string", dest="input_iso",
                       default='input.iso')
-    parser.add_option("--output-iso", help="Path to ISO to generate.",
+    parser.add_option("--output-iso",
+                      help="Path to ISO to generate. Default is 'output.iso'.",
                       action="store", type="string", dest="output_iso",
                       default='output.iso')
-    parser.add_option("--preseed", help="Path or URL to preseed file.",
-                      action="store", type="string", dest="preseed_file",
+    parser.add_option("--preseed", help="Path or URL to preseed file. " \
+                      "Default is 'preseed.cfg'.", action="store",
+                      type="string", dest="preseed_file",
                       default='preseed.cfg')
-    parser.add_option("--hide-boot-loader", help="Hide boot loader.",
+    parser.add_option("--hide-boot-loader", help="Hide boot loader (default).",
                       action='store_true', dest="is_boot_loader_hidden",
                       default=True)
     parser.add_option("--show-boot-loader", help="Show boot loader.",
@@ -50,7 +53,8 @@ def build_iso():
         insert_preseed_into_iso(options.preseed_file, options.input_iso,
                                 options.output_iso,
                                 options.is_boot_loader_hidden)
-        print "SUCCESS: %s file has been generated." % options.output_iso
+        if os.path.exists(options.output_iso):
+            print "SUCCESS: %s file has been generated." % options.output_iso
     finally:
         if tmp_input_iso:
             os.unlink(tmp_input_iso)

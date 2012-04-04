@@ -8,6 +8,30 @@ Custom scripts, files and templates around `Debian`_ installer.
 
   This is **experimental** work.
 
+********
+Abstract
+********
+
+Tools provided here were created to simplify creation and distribution of
+`Debian`_ "base systems":
+
+* automate installation of a Debian system on a machine.
+* preconfigure parts or full Debian installation.
+* distribute ISO files, based on existing Debian's ISO files.
+* or distribute only configuration files (a preseed file or a configuration
+  file for a preseed file generator).
+
+The original context was to simplify and standardize creation of servers,
+mostly virtual machines, for web development:
+
+* share server configuration in a team.
+* share something lightweight, like a "business-card ISO installer" or (even
+  better) a configuration file, rather than big disk images.
+* rely on something repeatable, not on a
+  big-disk-image-nobody-knows-how-to-rebuild-exactly-the-same (TM).
+* allow configuration from the beginning, i.e. share a system but allow
+  users to customize some points, such as passwords or network configuration.
+
 *****
 Usage
 *****
@@ -96,7 +120,60 @@ preseed file with boot loader.
 Generate an ISO installer including the preseed file
 ====================================================
 
-This tool is not released yet.
+* Install requirements:
+
+  * `Python`_ 2.6 or 2.7
+  * `Git`_, or you will have to download sources as archive on
+    `marmelune.debianisobuilder's repository`_.
+  * Some additional shell commands:
+  
+    * curl (only if you use remote ISO or preseed file)
+    * bsdtar
+    * chmod
+    * gunzip
+    * cd
+    * cpio
+    * gzip
+    * find
+    * md5sum
+    * mkisofs
+
+    On Debian systems, you can:
+
+    .. highlight:: sh
+
+    ::
+
+      sudo aptitude install curl bsdtar cpio mkisofs
+
+* Install marmelune.debianisobuilder:
+
+  .. highlight:: sh
+
+  ::
+
+    git clone
+    cd marmelune.debianisobuilder
+    python lib/buildout/bootstrap.py --distribute
+    bin/buildout -N
+
+* Use provided ``debianisobuilder`` command to generate ISO file:
+
+  .. highlight:: sh
+
+  ::
+
+    bin/debianisobuilder --help
+
+  As an example, to combine remote `Debian Squeeze amd64 business card ISO`_
+  and `A custom FR preseed file for Debian Squeeze servers`_ to
+  ``var/debian.iso`` file:
+
+  .. highlight:: sh
+
+  ::
+
+    bin/debianisobuilder --preseed=https://raw.github.com/benoitbryon/marmelune.debianisobuilder/master/etc/preseed-squeeze-server-fr.cfg --input-iso=http://cdimage.debian.org/debian-cd/6.0.4/amd64/iso-cd/debian-6.0.4-amd64-businesscard.iso --output-iso=var/debian.iso
 
 ************
 Alternatives
@@ -106,6 +183,34 @@ These tools are really simple ones, and may stay simple. They were created as
 a proof of concept and so they satisfy very simple needs. If you are looking
 for more powerful tools, fetch the web. Advanced tools to create custom Debian
 distributions and deploy them should exist...
+
+**********
+Contribute
+**********
+
+* Install package as told in "Generate an ISO installer including the preseed
+  file" section above.
+* Install development environment:
+
+  .. highlight:: sh
+
+  ::
+
+    bin/buildout -N install dev-environment
+
+* Run tests:
+
+  .. highlight:: sh
+
+  ::
+
+    bin/nosetests --with-coverage --rednose --with-doctest src/
+
+.. note::
+
+  ``marmelune`` namespace is related to http://marmelune.net/. Here, it is used
+  as a personal namespace for experimental work. If you think this package
+  should be promoted, open a ticket and propose a package name.
 
 **********
 References

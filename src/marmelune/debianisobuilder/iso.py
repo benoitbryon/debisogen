@@ -24,6 +24,8 @@ def iso_to_directory(iso_file, directory):
 
 def directory_to_iso(directory, iso_file):
     """Create ISO image from directory."""
+    if not os.path.exists(os.path.dirname(iso_file)):
+        os.makedirs(os.path.dirname(iso_file))
     execute_command('mkisofs -o %(iso)s -r -J -no-emul-boot ' \
                     ' -boot-load-size 4 -boot-info-table ' \
                     '-b isolinux/isolinux.bin -c isolinux/boot.cat %(dir)s',

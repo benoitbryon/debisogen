@@ -71,5 +71,5 @@ def is_url(value):
 
 def download_file(source, destination):
     """Download file from source to destination."""
-    execute_command('curl --location --output %(dest)s %(src)',
+    execute_command('curl --location --output %(dest)s %(src)s',
                     {'dest': destination, 'src': source})
