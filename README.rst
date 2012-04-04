@@ -39,6 +39,12 @@ Usage
 Manually load preseed file in grub menu
 =======================================
 
+.. note::
+
+  This feature is provided by the Debian installer itself. You don't need this
+  package for that! But you should know this feature to understand what this
+  package does.
+
 `A custom FR preseed file for Debian Squeeze servers`_ is provided in ``etc/``
 directory. It defines following options:
 
@@ -54,8 +60,8 @@ Usage:
 * Download a Debian Squeeze iso at `Debian download page`_, as an example
   `Debian Squeeze amd64 business card ISO`_.
 * Boot your server on the ISO.
-* When you get to the install menu prompt, hit ESC, which will give you boot:
-  prompt. At the prompt type:
+* When you get to the install menu prompt, hit ESC, which will give you
+  ``boot:`` prompt. At the prompt type:
 
   ::
 
