@@ -41,7 +41,7 @@ Generate a preseed file with a template
 
   ::
 
-    pip install debisogen
+    pip install git+https://github.com/benoitbryon/debisogen.git#egg=debisogen
 
 * Generate preseed file in ``var/`` directory:
 
@@ -87,7 +87,7 @@ Generate an ISO installer including the preseed file
 
   ::
 
-    pip install debisogen
+    pip install git+https://github.com/benoitbryon/debisogen.git#egg=debisogen
 
 * Use provided ``debisogen`` command to generate ISO file:
 
@@ -101,7 +101,7 @@ Generate an ISO installer including the preseed file
 
   ::
 
-    debisogen --preseed=https://raw.github.com/benoitbryon/debisogen/master/etc/preseed-squeeze-server-fr.cfg --input-iso=http://cdimage.debian.org/debian-cd/6.0.4/amd64/iso-cd/debian-6.0.4-amd64-businesscard.iso --output-iso=var/debian.iso
+    debisogen --preseed=https://raw.github.com/benoitbryon/debisogen/master/etc/preseed-squeeze-server-fr.cfg --input-iso=http://cdimage.debian.org/debian-cd/6.0.5/amd64/iso-cd/debian-6.0.5-amd64-businesscard.iso --output-iso=var/debian.iso
 
   Obviously, you could be interested in using `the custom preseed file
   generated in previous section <#generate-a-preseed-file-with-a-template>`_.
@@ -204,7 +204,7 @@ References
 .. _`virtualenv`: http://virtualenv.org/
 .. _`PasteScript`: http://pythonpaste.org/script/
 .. _`Debian Squeeze amd64 business card ISO`:
-   http://cdimage.debian.org/debian-cd/6.0.4/amd64/iso-cd/debian-6.0.4-amd64-businesscard.iso
+   http://cdimage.debian.org/debian-cd/6.0.5/amd64/iso-cd/debian-6.0.5-amd64-businesscard.iso
 .. _`a custom FR preseed file for Debian Squeeze servers`:
    https://raw.github.com/benoitbryon/debisogen/master/etc/preseed-squeeze-server-fr.cfg
 .. _`bugtracker`: https://github.com/benoitbryon/debisogen/issues
