@@ -1,49 +1,118 @@
-##########################
-marmelune.debianisobuilder
-##########################
+#########
+debisogen
+#########
 
-Custom scripts, files and templates around `Debian`_ installer.
+Tools to automate creation of `Debian`_ Installer ISO images.
 
-.. warning::
-
-  This is **experimental** work.
 
 ********
 Abstract
 ********
 
-Tools provided here were created to simplify creation and distribution of
-`Debian`_ "base systems":
+debisogen was created to simplify creation and distribution of `Debian`_
+"base systems":
 
-* automate installation of a Debian system on a machine.
-* preconfigure parts or full Debian installation.
-* distribute ISO files, based on existing Debian's ISO files.
-* or distribute only configuration files (a preseed file or a configuration
-  file for a preseed file generator).
+* you focus on lightweight configuration;
 
-The original context was to simplify and standardize creation of servers,
-mostly virtual machines, for web development:
+* debisogen helps you generate custom `preseed files`_ via templates;
 
-* share server configuration in a team.
-* share something lightweight, like a "business-card ISO installer" or (even
-  better) a configuration file, rather than big disk images.
-* rely on something repeatable, not on a
-  big-disk-image-nobody-knows-how-to-rebuild-exactly-the-same (TM).
-* allow configuration from the beginning, i.e. share a system but allow
-  users to customize some points, such as passwords or network configuration.
+* debisogen produces a customized ISO image with the preseed and a
+  base ISO image (typically an official ISO image).
+
+* you can use the ISO image to automatically install a Debian system.
+
+debisogen makes it possible to repeat a Debian installation from very
+lightweight configuration.
+
 
 *****
 Usage
 *****
+
+Generate a preseed file with a template
+=======================================
+
+* Install requirements:
+
+  * `Python`_ 2.6 or 2.7. You may use `Virtualenv`_ to get the adequate Python
+    version.
+
+* Install debisogen:
+
+  ::
+
+    pip install debisogen
+
+* Generate preseed file in ``var/`` directory:
+
+  ::
+
+    bin/paster create -t debian_preseed var/
+
+  Answer questions. You get a ``var/preseed.cfg`` file.
+
+.. note::
+
+  You can generate files without interaction with paster. See paster's
+  ``--config`` option and additional command line arguments. Full help with
+  builtin ``paster help create`` command, or on `PasteScript`_ website.
+
+Generate an ISO installer including the preseed file
+====================================================
+
+* Install requirements:
+
+  * `Python`_ 2.6 or 2.7. You may use `Virtualenv`_ to get the adequate
+    version.
+  * Some additional shell commands (debisogen uses them):
+  
+    * curl (only if you use remote ISO or preseed file)
+    * bsdtar
+    * chmod
+    * gunzip
+    * cd
+    * cpio
+    * gzip
+    * find
+    * md5sum
+    * mkisofs
+
+    On a Debian system, you can achieve it with:
+
+    ::
+
+      sudo aptitude install curl bsdtar cpio mkisofs
+
+* Install debisogen:
+
+  ::
+
+    pip install debisogen
+
+* Use provided ``debisogen`` command to generate ISO file:
+
+  ::
+
+    debisogen --help
+
+  As another example, to combine remote `Debian Squeeze amd64 business card
+  ISO`_ and `A custom FR preseed file for Debian Squeeze servers`_ to
+  ``var/debian.iso`` file:
+
+  ::
+
+    debisogen --preseed=https://raw.github.com/benoitbryon/debisogen/master/etc/preseed-squeeze-server-fr.cfg --input-iso=http://cdimage.debian.org/debian-cd/6.0.4/amd64/iso-cd/debian-6.0.4-amd64-businesscard.iso --output-iso=var/debian.iso
+
+  Obviously, you could be interested in using `the custom preseed file
+  generated in previous section <#generate-a-preseed-file-with-a-template>`_.
 
 Manually load preseed file in grub menu
 =======================================
 
 .. note::
 
-  This feature is provided by the Debian installer itself. You don't need this
-  package for that! But you should know this feature to understand what this
-  package does.
+  This feature is provided by the Debian installer itself, not by debisogen.
+  It is documented here as an informational tip.
 
 `A custom FR preseed file for Debian Squeeze servers`_ is provided in ``etc/``
 directory. It defines following options:
@@ -57,129 +126,38 @@ directory. It defines following options:
 
 Usage:
 
-* Download a Debian Squeeze iso at `Debian download page`_, as an example
-  `Debian Squeeze amd64 business card ISO`_.
-* Boot your server on the ISO.
+* Boot a machine on a Debian Squeeze ISO, as an example `Debian Squeeze
+  amd64 business card ISO`_.
+
 * When you get to the install menu prompt, hit ESC, which will give you
   ``boot:`` prompt. At the prompt type:
 
   ::
 
-    install auto=true priority=critical preseed/url=https://raw.github.com/benoitbryon/marmelune.debianisobuilder/master/etc/preseed-squeeze-server-fr.cfg
-
-Generate a preseed file with a template
-=======================================
-
-* Install requirements:
-
-  * `Python`_ 2.6 or 2.7
-  * `Git`_, or you will have to download sources as archive on
-    `marmelune.debianisobuilder's repository`_.
-
-* Install marmelune.debianisobuilder:
-
-  .. highlight:: sh
-
-  ::
-
-    git clone
-    cd marmelune.debianisobuilder
-    python lib/buildout/bootstrap.py --distribute
-    bin/buildout -N
-
-* Generate preseed file:
-
-  .. highlight:: sh
-
-  ::
-
-    bin/paster create -t marmelune_debian_preseed ./var/preseed
-
-  Answer questions. You got a ``./var/preseed/preseed-server-fr.cfg`` file.
-
-.. note::
-
-  You can generate files without interaction with paster. See paster's
-  ``--config`` option and additional command line arguments. Full help with
-  builtin ``paster help create`` command, or on `PasteScript`_ website.
+    install auto=true priority=critical preseed/url=https://raw.github.com/benoitbryon/debisogen/master/etc/preseed-squeeze-server-fr.cfg
 
 Put a preseed file on the network, to load it at boot time
 ==========================================================
 
-You can use Python's builtin SimpleHttpServer to serve static files.
-As an example, if you want to serve the sample preseed file provided here at
-``etc/preseed-squeeze-server-fr.cfg`` on your machine:
+.. note::
 
-.. highlight:: sh
+   This feature is provided by Python, not by debisogen. It is documented
+   here as an informational tip.
+
+You can use Python's builtin SimpleHttpServer to serve static files.
+As an example, if you want to serve the sample preseed file provided at
+``preseed-squeeze-server-fr.cfg`` on your machine:
 
 ::
 
-  cd etc/
   python -m SimpleHttpServer 8000
 
 So you can access this preseed file at
 http://YOUR-IP:8000/preseed-squeeze-server-fr.cfg
 
-Then refer to "Manually load preseed file in grub menu" above to load this
+Then refer to `Manually load preseed file in grub menu`_ above to load this
 preseed file with boot loader.
 
-Generate an ISO installer including the preseed file
-====================================================
-
-* Install requirements:
-
-  * `Python`_ 2.6 or 2.7
-  * `Git`_, or you will have to download sources as archive on
-    `marmelune.debianisobuilder's repository`_.
-  * Some additional shell commands:
-  
-    * curl (only if you use remote ISO or preseed file)
-    * bsdtar
-    * chmod
-    * gunzip
-    * cd
-    * cpio
-    * gzip
-    * find
-    * md5sum
-    * mkisofs
-
-    On Debian systems, you can:
-
-    .. highlight:: sh
-
-    ::
-
-      sudo aptitude install curl bsdtar cpio mkisofs
-
-* Install marmelune.debianisobuilder:
-
-  .. highlight:: sh
-
-  ::
-
-    git clone
-    cd marmelune.debianisobuilder
-    python lib/buildout/bootstrap.py --distribute
-    bin/buildout -N
-
-* Use provided ``debianisobuilder`` command to generate ISO file:
-
-  .. highlight:: sh
-
-  ::
-
-    bin/debianisobuilder --help
-
-  As an example, to combine remote `Debian Squeeze amd64 business card ISO`_
-  and `A custom FR preseed file for Debian Squeeze servers`_ to
-  ``var/debian.iso`` file:
-
-  .. highlight:: sh
-
-  ::
-
-    bin/debianisobuilder --preseed=https://raw.github.com/benoitbryon/marmelune.debianisobuilder/master/etc/preseed-squeeze-server-fr.cfg --input-iso=http://cdimage.debian.org/debian-cd/6.0.4/amd64/iso-cd/debian-6.0.4-amd64-businesscard.iso --output-iso=var/debian.iso
 
 ************
 Alternatives
@@ -190,33 +168,19 @@ a proof of concept and so they satisfy very simple needs. If you are looking
 for more powerful tools, fetch the web. Advanced tools to create custom Debian
 distributions and deploy them should exist...
 
+
 **********
 Contribute
 **********
 
-* Install package as told in "Generate an ISO installer including the preseed
-  file" section above.
-* Install development environment:
+* Report and discuss issues or feature requests in the `bugtracker`_.
 
-  .. highlight:: sh
+* Clone `code repository`_.
 
-  ::
+* Install development environment with ``make develop``.
 
-    bin/buildout -N install dev-environment
+* Run tests with ``make tests``.
 
-* Run tests:
-
-  .. highlight:: sh
-
-  ::
-
-    bin/nosetests --with-coverage --rednose --with-doctest src/
-
-.. note::
-
-  ``marmelune`` namespace is related to http://marmelune.net/. Here, it is used
-  as a personal namespace for experimental work. If you think this package
-  should be promoted, open a ticket and propose a package name.
 
 **********
 References
@@ -234,16 +198,17 @@ References
 .. target-notes::
 
 .. _`Debian`: http://debian.org/
-.. _`a custom FR preseed file for Debian Squeeze servers`:
-   https://raw.github.com/benoitbryon/marmelune.debianisobuilder/master/etc/preseed-squeeze-server-fr.cfg
-.. _`Debian download page`: http://www.debian.org/distrib/
+.. _`preseed files`:
+   http://www.debian.org/releases/squeeze/amd64/apb.html.en
+.. _`Python`: http://python.org/
+.. _`virtualenv`: http://virtualenv.org/
+.. _`PasteScript`: http://pythonpaste.org/script/
 .. _`Debian Squeeze amd64 business card ISO`:
    http://cdimage.debian.org/debian-cd/6.0.4/amd64/iso-cd/debian-6.0.4-amd64-businesscard.iso
-.. _`Python`: http://python.org/
-.. _`Git`: http://git-scm.org/
-.. _`marmelune.debianisobuilder's repository`:
-   https://github.com/benoitbryon/marmelune.debianisobuilder
-.. _`PasteScript`: http://pythonpaste.org/script/
+.. _`a custom FR preseed file for Debian Squeeze servers`:
+   https://raw.github.com/benoitbryon/debisogen/master/etc/preseed-squeeze-server-fr.cfg
+.. _`bugtracker`: https://github.com/benoitbryon/debisogen/issues
+.. _`code repository`: https://github.com/benoitbryon/debisogen
 .. _`Debian Squeeze documentation about preseeding`:
    http://www.debian.org/releases/squeeze/amd64/apb.html.en
 .. _`Debian Squeeze preseed example file`:

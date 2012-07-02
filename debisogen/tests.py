@@ -2,8 +2,8 @@
 import os
 from unittest import TestCase
 
-from iso import toggle_boot_loader
-from utils import use_temp_dir
+from debisogen.iso import toggle_boot_loader
+from debisogen.utils import use_temp_dir
 
 
 class ToggleBootLoaderTestCase(TestCase):

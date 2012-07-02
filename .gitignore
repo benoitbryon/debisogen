@@ -1,14 +1,22 @@
-# Binaries (generated)
+# Local binaries (they are generated).
 /bin/
 
-# Data
-/var/
-
-# Python
+# Python files.
 *.pyc
 *.pyo
 *.egg-info
 
-# Buildout
-/lib/buildout/*
-!/lib/buildout/bootstrap.py
+# Libraries.
+/lib/
+
+# Data.
+/var/
+
+# Documentation builds.
+/docs/_build/
+
+# Coverage output.
+/.coverage
+
+# Editor(s) temporary files.
+.*.swp
