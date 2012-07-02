@@ -2,3 +2,4 @@ recursive-include debisogen *
 global-exclude *.pyc
 include *.txt
 include *.rst
+include etc/defaults.cfg
