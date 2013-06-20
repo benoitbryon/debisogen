@@ -1,5 +1,5 @@
 recursive-include debisogen *
-global-exclude *.pyc
+global-exclude *.pyc .*.swp
 include *.txt
-include *.rst
+include AUTHORS CHANGELOG INSTALL LICENSE README VERSION
 include etc/defaults.cfg

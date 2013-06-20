@@ -1,0 +1,10 @@
+Changelog
+=========
+
+0.1 (unreleased)
+----------------
+
+- First implementation of Debian ISO generator, based on external tools.
+- Added sample Debian preseed files, including some for Vagrant.
+- Added paster template to generate Debian preseed files.
+- Initialized project.

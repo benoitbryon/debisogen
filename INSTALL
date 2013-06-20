@@ -1,0 +1,47 @@
+############
+Installation
+############
+
+This project is open-source, published under BSD license.
+See LICENSE for details.
+
+If you want to install a development environment, see the Makefile.
+``make develop`` should work fine on Debian-based systems.
+
+Install requirements:
+
+* `Python`_ 2.6 or 2.7. You may use `Virtualenv`_ to get the adequate
+  version.
+
+* Some additional shell commands (debisogen uses them):
+  
+  * curl (only if you use remote ISO or preseed file)
+  * bsdtar
+  * chmod
+  * gunzip
+  * cd
+  * cpio
+  * gzip
+  * find
+  * md5sum
+  * genisoimage
+
+  On a Debian system, you can achieve it with:
+
+  .. code:: sh
+
+     sudo apt-get install --no-install-recommends curl bsdtar cpio gzip findutils coreutils genisoimage
+
+* `Python`_ 2.7. You may use `Virtualenv`_ to get the adequate Python version.
+
+Install debisogen (with pip):
+
+.. code:: sh
+
+   pip install git+https://github.com/benoitbryon/debisogen.git#egg=debisogen
+
+
+.. target-notes::
+
+.. _`Python`: http://python.org/
+.. _`virtualenv`: http://virtualenv.org/

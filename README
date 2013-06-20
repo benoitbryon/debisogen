@@ -2,117 +2,86 @@
 debisogen
 #########
 
-Tools to automate creation of `Debian`_ Installer ISO images.
+Tools to automate creation of custom `Debian`_ installer ISO images from
+`preseed files`_.
 
 
 ********
 Abstract
 ********
 
-debisogen was created to simplify creation and distribution of `Debian`_
-"base systems":
+debisogen helps you get repeatable `Debian`_ installations from very
+lightweight configuration:
 
-* you focus on lightweight configuration;
+* you already have a custom `preseed files`_, or you generate a new one with
+  debisogen templates;
 
-* debisogen helps you generate custom `preseed files`_ via templates;
+* you have a base Debian ISO image, typically an official ISO image;
 
-* debisogen produces a customized ISO image with the preseed and a
-  base ISO image (typically an official ISO image).
+* debisogen produces a customized ISO image with the preseed and the base ISO;
 
 * you can use the ISO image to automatically install a Debian system.
 
-debisogen makes it possible to repeat a Debian installation from very
-lightweight configuration.
+
+************
+Installation
+************
+
+See INSTALL.
 
 
-*****
-Usage
-*****
+***********************
+Generate a preseed file
+***********************
 
-Generate a preseed file with a template
-=======================================
+Generate preseed file in ``var/`` directory:
 
-* Install requirements:
+.. code:: sh
 
-  * `Python`_ 2.6 or 2.7. You may use `Virtualenv`_ to get the adequate Python
-    version.
+   bin/paster create -t debian_preseed var/
 
-* Install debisogen:
-
-  ::
-
-    pip install git+https://github.com/benoitbryon/debisogen.git#egg=debisogen
-
-* Generate preseed file in ``var/`` directory:
-
-  ::
-
-    bin/paster create -t debian_preseed var/
-
-  Answer questions. You get a ``var/preseed.cfg`` file.
+Answer questions. You get a ``var/preseed.cfg`` file.
 
 .. note::
 
-  You can generate files without interaction with paster. See paster's
-  ``--config`` option and additional command line arguments. Full help with
-  builtin ``paster help create`` command, or on `PasteScript`_ website.
+   You can generate files without interaction with paster. See paster's
+   ``--config`` option and additional command line arguments. Full help with
+   builtin ``paster help create`` command, or on `PasteScript`_ website.
 
-Generate an ISO installer including the preseed file
-====================================================
 
-* Install requirements:
+*********************
+Generate a Debian ISO
+*********************
 
-  * `Python`_ 2.6 or 2.7. You may use `Virtualenv`_ to get the adequate
-    version.
-  * Some additional shell commands (debisogen uses them):
-  
-    * curl (only if you use remote ISO or preseed file)
-    * bsdtar
-    * chmod
-    * gunzip
-    * cd
-    * cpio
-    * gzip
-    * find
-    * md5sum
-    * mkisofs
+Use provided ``debisogen`` command to generate ISO file:
 
-    On a Debian system, you can achieve it with:
+.. code:: sh
 
-    ::
+   debisogen --help
 
-      sudo aptitude install curl bsdtar cpio mkisofs
+As another example, to combine remote `Debian Squeeze amd64 business card
+ISO`_ and `A custom FR preseed file for Debian Squeeze servers`_ to
+``var/debian.iso`` file:
 
-* Install debisogen:
+.. code:: sh
 
-  ::
+   debisogen --preseed=https://raw.github.com/benoitbryon/debisogen/master/etc/preseed-server.cfg --input-iso=http://cdimage.debian.org/debian-cd/current/amd64/iso-cd/debian-7.1.0-amd64-netinst.iso --output-iso=var/debian.iso
 
-    pip install git+https://github.com/benoitbryon/debisogen.git#egg=debisogen
+Obviously, you could be interested in using `the custom preseed file
+generated in previous section <#generate-a-preseed-file-with-a-template>`_.
 
-* Use provided ``debisogen`` command to generate ISO file:
 
-  ::
+************
+Preseed tips
+************
 
-    debisogen --help
+.. note::
 
-  As another example, to combine remote `Debian Squeeze amd64 business card
-  ISO`_ and `A custom FR preseed file for Debian Squeeze servers`_ to
-  ``var/debian.iso`` file:
-
-  ::
-
-    debisogen --preseed=https://raw.github.com/benoitbryon/debisogen/master/etc/preseed-squeeze-server-fr.cfg --input-iso=http://cdimage.debian.org/debian-cd/6.0.5/amd64/iso-cd/debian-6.0.5-amd64-businesscard.iso --output-iso=var/debian.iso
-
-  Obviously, you could be interested in using `the custom preseed file
-  generated in previous section <#generate-a-preseed-file-with-a-template>`_.
+   The following features are provided by the Debian installer itself, not by
+   debisogen. They are documented here as an informational tip.
 
 Manually load preseed file in grub menu
 =======================================
-
-.. note::
-
-  This feature is provided by the Debian installer itself, not by debisogen.
-  It is documented here as an informational tip.
 
 `A custom FR preseed file for Debian Squeeze servers`_ is provided in ``etc/``
 directory. It defines following options:
@@ -132,28 +101,23 @@ Usage:
 * When you get to the install menu prompt, hit ESC, which will give you
   ``boot:`` prompt. At the prompt type:
 
-  ::
+  .. code:: text
 
-    install auto=true priority=critical preseed/url=https://raw.github.com/benoitbryon/debisogen/master/etc/preseed-squeeze-server-fr.cfg
+     install auto=true priority=critical preseed/url=https://raw.github.com/benoitbryon/debisogen/master/etc/preseed-server.cfg
 
 Put a preseed file on the network, to load it at boot time
 ==========================================================
-
-.. note::
-
-   This feature is provided by Python, not by debisogen. It is documented
-   here as an informational tip.
 
 You can use Python's builtin SimpleHttpServer to serve static files.
 As an example, if you want to serve the sample preseed file provided at
 ``preseed-squeeze-server-fr.cfg`` on your machine:
 
-::
+.. code:: sh
 
-  python -m SimpleHttpServer 8000
+   python -m SimpleHttpServer 8000
 
 So you can access this preseed file at
-http://YOUR-IP:8000/preseed-squeeze-server-fr.cfg
+http://YOUR-IP:8000/preseed-server.cfg
 
 Then refer to `Manually load preseed file in grub menu`_ above to load this
 preseed file with boot loader.
@@ -174,11 +138,8 @@ Contribute
 **********
 
 * Report and discuss issues or feature requests in the `bugtracker`_.
-
 * Clone `code repository`_.
-
 * Install development environment with ``make develop``.
-
 * Run tests with ``make tests``.
 
 
@@ -200,13 +161,11 @@ References
 .. _`Debian`: http://debian.org/
 .. _`preseed files`:
    http://www.debian.org/releases/squeeze/amd64/apb.html.en
-.. _`Python`: http://python.org/
-.. _`virtualenv`: http://virtualenv.org/
 .. _`PasteScript`: http://pythonpaste.org/script/
 .. _`Debian Squeeze amd64 business card ISO`:
    http://cdimage.debian.org/debian-cd/6.0.5/amd64/iso-cd/debian-6.0.5-amd64-businesscard.iso
 .. _`a custom FR preseed file for Debian Squeeze servers`:
-   https://raw.github.com/benoitbryon/debisogen/master/etc/preseed-squeeze-server-fr.cfg
+   https://raw.github.com/benoitbryon/debisogen/master/etc/preseed-server.cfg
 .. _`bugtracker`: https://github.com/benoitbryon/debisogen/issues
 .. _`code repository`: https://github.com/benoitbryon/debisogen
 .. _`Debian Squeeze documentation about preseeding`:

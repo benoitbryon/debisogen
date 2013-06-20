@@ -3,7 +3,6 @@ import glob
 import os
 import re
 import shutil
-import subprocess
 
 from utils import use_temp_dir, replace_in_file, execute_command, download_file
 
@@ -27,8 +26,8 @@ def directory_to_iso(directory, iso_file):
     output_dir = os.path.dirname(os.path.abspath(iso_file))
     if not os.path.exists(output_dir):
         os.makedirs(output_dir)
-    execute_command('mkisofs -o %(iso)s -r -J -no-emul-boot ' \
-                    ' -boot-load-size 4 -boot-info-table ' \
+    execute_command('genisoimage -o %(iso)s -r -J -no-emul-boot '
+                    ' -boot-load-size 4 -boot-info-table '
                     '-b isolinux/isolinux.bin -c isolinux/boot.cat %(dir)s',
                     {'iso': iso_file, 'dir': directory})
 
@@ -46,7 +45,7 @@ def directory_to_initrd(directory, initrd_file):
     """Compress directory as initrd.gz file."""
     assert(initrd_file.endswith('.gz'))
     initrd_file = initrd_file[:-3]
-    execute_command("cd %(in)s && find . | cpio --create --format='newc' > " \
+    execute_command("cd %(in)s && find . | cpio --create --format='newc' > "
                     "%(out)s", {'in': directory, 'out': initrd_file})
     execute_command('gzip %(file)s', {'file': initrd_file})
 
@@ -69,7 +68,7 @@ def toggle_boot_loader(directory, is_boot_loader_hidden=True):
 
 def rebuild_md5sum(directory):
     """Rebuild md5sum.txt file in the given directory."""
-    execute_command('cd %(dir)s ; md5sum `find ! -name "md5sum.txt" ! ' \
+    execute_command('cd %(dir)s ; md5sum `find ! -name "md5sum.txt" ! '
                     '-path "./isolinux/*" -follow -type f` > md5sum.txt ;',
                     {'dir': directory})
 
@@ -87,7 +86,7 @@ def insert_preseed_into_iso(preseed_file, input_iso_file, output_iso_file,
         if not install_dir:
             raise Exception('No install.* directory found in %(iso)s')
         if len(install_dir) > 1:
-            raise Exception('Several install.* directories found in %(iso)s ' \
+            raise Exception('Several install.* directories found in %(iso)s '
                             'ISO: %(dirs)s' % {'iso': input_iso_file,
                                                'dirs': install_dir})
         initrd_file = os.path.join(install_dir[0], 'initrd.gz')
